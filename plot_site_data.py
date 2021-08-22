@@ -50,6 +50,8 @@ if __name__ == "__main__":
     _site_name = sites[args.station]['station_name']
     serial_data = binned_data[args.station]['serial_data']
 
+    logging.info(f"Found {len(serial_data)} Serial numbers.")
+
     bursts = []
     burst_times = []
     descents = []
@@ -88,6 +90,9 @@ if __name__ == "__main__":
                 if (_last['vel_v'] < 0) and (_last_alt < descent_max_alt):
                     descents.append(seaLevelDescentRate(_last['vel_v'], _last_alt))
                     descent_times.append(parse(_last['datetime']))
+
+    logging.info(f"Extracted {len(bursts)} Burst Altitude Datapoints.")
+    logging.info(f"Extracted {len(descents)} Landing Rate Datapoints")
 
     plt.figure(figsize=(12,6))
     plt.title(f"{_site_name} - Burst Altitudes")
