@@ -4,6 +4,7 @@
 #
 
 import argparse
+import json
 import os
 import sys
 import logging
@@ -148,8 +149,15 @@ if __name__ == "__main__":
 
             if _avgs:
                 _avg_data = f"Bursts ({_avgs['burst_count']}): {_avgs['burst_mean']:.0f} m, {_avgs['burst_std']:.0f} m std-dev"
+                sites[_site]['burst_altitude'] = int(_avgs['burst_mean'])
+                sites[_site]['burst_samples'] = _avgs['burst_count']
+                sites[_site]['burst_std'] = int(_avgs['burst_std'])
+
                 if _avgs['descent_count'] > 5:
                   _avg_data += f"; Landing Rates ({_avgs['descent_count']}): {_avgs['descent_mean']:.1f} m/s, {_avgs['descent_std']:.1f} m/s std-dev"
+                  sites[_site]['descent_rate'] = round(_avgs['descent_mean'],1)
+                  sites[_site]['descent_samples'] = _avgs['descent_count']
+                  sites[_site]['descent_std'] = round(_avgs['descent_std'],1)
             
                 for _type in _avgs['type']:
                     _avg_data += f"; {_type}: {_avgs['type'][_type]}"
@@ -163,3 +171,23 @@ if __name__ == "__main__":
 
     
     # TODO: Write out launch site data again.
+
+    if args.updatesites:
+        _outf = open(args.updatesites, 'w')
+
+        _outf.write("[\n  ")
+
+        _sites = list(sites.keys())
+        _sites.sort()
+
+        _site_lines = []
+
+        for _site in _sites:
+            _line = "  " + json.dumps(sites[_site])
+            _site_lines.append(_line)
+        
+        _site_lines_str = ",\n  ".join(_site_lines)
+
+        _outf.write(_site_lines_str)
+        _outf.write("\n]")
+        _outf.close()

@@ -86,7 +86,7 @@ $ python bin_sonde_summaries.py --binnedinput binned_sites.json --postanalysis
 ... many more lines
 ```
 
-(NOT IMPLEMENTED YET) You can optionally update the data in `launchSites.json` and write out an updated file using the `--updatesites outputfile.json` option.
+You can optionally update the data in `launchSites.json` and write out an updated file using the `--updatesites outputfile.json` option.
 
 ## Plotting Burst Altitudes and Descent Rates for a launch station
 We can plot out the burst altitudes and ascent/descent rates for a station by running:
