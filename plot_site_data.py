@@ -58,6 +58,8 @@ if __name__ == "__main__":
     descent_times = []
     ascents = []
     ascent_times = []
+    freqs = []
+    freq_times = []
 
     descent_max_alt = 12000
 
@@ -74,6 +76,11 @@ if __name__ == "__main__":
         _first_time = parse(_first['datetime'])
         _burst_time = parse(_burst['datetime'])
 
+        try:
+            freqs.append(_last['frequency'])
+            freq_times.append(_first_time)
+        except:
+            pass
 
         if (_burst_alt > _first_alt) and (_burst_alt > _last_alt):
             bursts.append(_burst_alt)
@@ -93,6 +100,7 @@ if __name__ == "__main__":
 
     logging.info(f"Extracted {len(bursts)} Burst Altitude Datapoints.")
     logging.info(f"Extracted {len(descents)} Landing Rate Datapoints")
+    logging.info(f"Extracted {len(freqs)} Frequency Datapoints")
 
     plt.figure(figsize=(12,6))
     plt.title(f"{_site_name} - Burst Altitudes")
@@ -121,6 +129,13 @@ if __name__ == "__main__":
     plt.axhline(np.median(descents)+np.std(descents), label=f'+1 Std-Dev ({np.std(descents):.1f} m/s)', linestyle='--', color='C2')
     plt.axhline(np.median(descents)-np.std(descents), label=f'-1 Std-Dev (-{np.std(descents):.1f} m/s)', linestyle='--', color='C2')
     plt.ylabel("Estimated Landing Rate (m/s)")
+    plt.legend()
+    plt.grid()
+
+    plt.figure(figsize=(12,6))
+    plt.title(f"{_site_name} - Transmit Frequencies")
+    plt.scatter(freq_times, freqs, color='C0')
+    plt.ylabel("Transmit Frequency (MHz)")
     plt.legend()
     plt.grid()
 
