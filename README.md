@@ -72,7 +72,7 @@ You can also add the `-v` option to get a very verbose output, including the sit
 
 Once finished the script will produce a file `binned_sites.json` which contains a dictionary, indexed by station code (refer launchSites.json), with each element containing the serial numbers associated with that site, and the telemetry data for each of those serial numbers. To avoid having to reprocess each individual sonde telemetry file each time, you can use the argument `--binnedinput binned_sites.json`.
 
-### Fligh Profile Analysis
+### Flight Profile Analysis
 By adding `--postanalysis` the script will analyse the sonde telemetry for each site, calculating the mean and standard deviation for burst altitudes and landing descent rates. 
 
 ```
@@ -88,8 +88,10 @@ $ python bin_sonde_summaries.py --binnedinput binned_sites.json --postanalysis
 
 You can optionally update the data in `launchSites.json` and write out an updated file using the `--updatesites outputfile.json` option.
 
-## Plotting Burst Altitudes and Descent Rates for a launch station
+## Plotting Data for a specific Launch Site
 We can plot out the burst altitudes and ascent/descent rates for a station by running:
 ```
 $ python plot_site_data.py --binnedinput binned_sites.json 94672
 ```
+
+(This also shows the observed transmit frequencies).
