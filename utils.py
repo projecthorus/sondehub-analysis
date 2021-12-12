@@ -196,20 +196,38 @@ def load_summary_file(filename):
         return None
 
 
-def load_launch_sites(filename='launchSites.json'):
-    """ Load in the launch sites dataset and rearrange it a bit to be useful later """
+# def load_launch_sites(filename='launchSites.json'):
+#     """ Load in the launch sites dataset and rearrange it a bit to be useful later """
+#     _f = open(filename,'r')
+#     _data = _f.read()
+#     _f.close()
+
+#     data = json.loads(_data)
+
+#     output = {}
+
+#     for _site in data:
+#         output[_site['station']] = _site
+
+#     return output
+
+
+def load_launch_sites(filename='sites.json'):
+    """
+    Load in the launch sites dataset and rearrange it a bit to be useful later
+    Updates to work with the new sites API structure.
+    """
     _f = open(filename,'r')
     _data = _f.read()
     _f.close()
 
     data = json.loads(_data)
 
-    output = {}
+    for _station in data.keys():
+        data[_station]['lat'] = float(data[_station]['position'][1])
+        data[_station]['lon'] = float(data[_station]['position'][0])
 
-    for _site in data:
-        output[_site['station']] = _site
-
-    return output
+    return data
 
 
 def calculate_averages(serial_data, min_count=5, descent_max_alt=12000):

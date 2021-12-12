@@ -27,15 +27,48 @@ s3 =
   addressing_style = path
 ```
 
+If uploading back into S3, you will need to add credential information into `~/.aws/credentials`.
+
 ## Preparation
 
-### Grab latest launchSites.json
+### Grab latest Launch Site List
+
 ```
-$ wget https://raw.githubusercontent.com/projecthorus/sondehub-tracker/testing/launchSites.json
+$ curl -L --compressed https://api.v2.sondehub.org/sites > sites.json
 ```
+
+Resultant launch site data looks like:
+```
+{
+  "-1": {
+    "descent_std": 2.5,
+    "rs_types": [
+      "41"
+    ],
+    "@version": "1",
+    "burst_samples": 52,
+    "station": "-1",
+    "position": [
+      144.947375,
+      -37.689883
+    ],
+    "descent_rate": 5.7,
+    "@timestamp": "2021-11-23T22:08:57.372Z",
+    "station_name": "Melbourne BoM Training Annex (Training and Ozonesondes) (Australia)",
+    "alt": 119,
+    "burst_std": 5382,
+    "descent_samples": 48,
+    "burst_altitude": 28068
+  },
+  etc...
+}
+```
+
 
 ### Download Sonde Summary Datasets
 The sonde 'summary' datasets provide first/highest/last telemetry snapshots for every sonde serial number observed by the SondeHub network. This information is enough to perform quite a lot of analysis, such as assigning sondes to launch sites, and determining mean flight profile parameters.
+
+These datasets can be browsed by date at: https://sondehub-history.s3.amazonaws.com/index.html#date/
 
 To grab a month worth of summary data, in this case January 2021:
 
@@ -71,6 +104,8 @@ $ python bin_sonde_summaries.py --folder sondes_2021/
 You can also add the `-v` option to get a very verbose output, including the site result for each sonde (often many tens of thousands of lines!).
 
 Once finished the script will produce a file `binned_sites.json` which contains a dictionary, indexed by station code (refer launchSites.json), with each element containing the serial numbers associated with that site, and the telemetry data for each of those serial numbers. To avoid having to reprocess each individual sonde telemetry file each time, you can use the argument `--binnedinput binned_sites.json`.
+
+Summary data can be re-uploaded to S3 using the --s3_upload option. This requires credentials set up in `~/.aws/credentials`. So far this has been used to post-process old summary data and add launch site information.
 
 ### Flight Profile Analysis
 By adding `--postanalysis` the script will analyse the sonde telemetry for each site, calculating the mean and standard deviation for burst altitudes and landing descent rates. 
